@@ -18,7 +18,7 @@ export default function HomePage() {
     <main>
       <Header />
       <HeroSlider/>
-      <AboutUs/>
+      {/* <AboutUs/>
       <OurServices/>
       <OurProjects/>
       <WorkProcess/>
@@ -29,7 +29,7 @@ export default function HomePage() {
       <ScrollingTicker />
       <OurTeam />
       <OurBlog />
-      <Footer />
+      <Footer /> */}
     </main>
   );
 }
