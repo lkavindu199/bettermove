@@ -7,7 +7,7 @@ import { OurServices } from '@/components/OurServices';
 import { OurProjects } from '@/components/OurProjects';
 import { OurSkills } from '@/components/OurSkills';
 import { WhyChooseUs } from '@/components/WhyChooseUs';
-import { FaqSection } from '@/components/FAQSection';
+import { FaqSection } from '@/components/FaqSection';
 import { ScrollingTicker } from '@/components/ScrollingTicker';
 import { OurTeam } from '@/components/OurTeam';
 import { OurBlog } from '@/components/OurBlog';
