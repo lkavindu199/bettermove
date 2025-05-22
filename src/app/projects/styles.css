@@ -1,0 +1,28 @@
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
+
+/* Swiper (Core & Bundle) */
+@import 'swiper/css';
+@import 'swiper/css/pagination';
+@import url('../../assets/css/swiper-bundle.min.css');
+
+/* Bootstrap */
+@import url('../../assets/css/bootstrap.min.css');
+
+/* SlickNav */
+@import url('../../assets/css/slicknav.min.css');
+
+/* Font Awesome */
+@import url('../../assets/css/all.min.css');
+
+/* Animations */
+@import url('../../assets/css/animate.css');
+
+/* Magnific Popup */
+@import url('../../assets/css/magnific-popup.css');
+
+/* Mouse Cursor */
+@import url('../../assets/css/mousecursor.css');
+
+/* Custom Styles */
+@import url('../../assets/css/custom.css');
