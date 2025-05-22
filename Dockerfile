@@ -1,62 +1,49 @@
-# To use this Dockerfile, set `output: 'standalone'` in your next.config.mjs.
-
-FROM node:22.12.0-alpine AS base
-
-# Install dependencies only when needed
-FROM base AS deps
-
-# Needed for some Node.js binaries on Alpine
-RUN apk add --no-cache libc6-compat
-
-# Install pnpm and configure it
-RUN npm install -g pnpm@9 && \
-    pnpm config set verify-store-integrity false
-
+# Stage 1: Base image with common setup
+FROM node:22-alpine AS base
 WORKDIR /app
+RUN apk add --no-cache libc6-compat
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable && corepack prepare pnpm@latest --activate
 
+# Stage 2: Dependencies installation
+FROM base AS deps
+WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
+    pnpm install --frozen-lockfile --prod
 
-RUN pnpm install --frozen-lockfile
-
-# Rebuild the source code only when needed
+# Stage 3: Build the application
 FROM base AS builder
 WORKDIR /app
-
-# Install pnpm again in the builder stage
-RUN npm install -g pnpm@9
-
 COPY --from=deps /app/node_modules ./node_modules
-COPY . .
-
-ENV NEXT_TELEMETRY_DISABLED=1
-
+COPY --from=deps /app/package.json .
+COPY --from=deps /app/pnpm-lock.yaml .
+COPY tsconfig.json .
+COPY next.config.mjs .
+COPY src ./src
+COPY public ./public
 RUN pnpm run build
 
-# Production image, copy all the files and run next
+# Stage 4: Production runtime
 FROM base AS runner
 WORKDIR /app
-
 ENV NODE_ENV=production
-ENV NEXT_TELEMETRY_DISABLED=1
 
-# Create a non-root user for security
-RUN addgroup --system --gid 1001 nodejs && \
-    adduser --system --uid 1001 nextjs
+# Create non-root user
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S -u 1001 -G nodejs nextjs
 
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/package.json ./
-
-# Prerender cache permissions
-RUN mkdir -p .next && \
-    chown nextjs:nodejs .next
-
-# Copy standalone build output with correct ownership
+# Copy built assets with proper permissions
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-USER nextjs
+# Special handling for Payload CMS
+RUN mkdir -p ./src/payload-types && \
+    chown nextjs:nodejs ./src/payload-types
 
+USER nextjs
 EXPOSE 3000
-ENV PORT=3000
-ENV HOSTNAME=0.0.0.0
 CMD ["node", "server.js"]
