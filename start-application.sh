@@ -9,11 +9,17 @@ docker-compose down --volumes --remove-orphans
 export DOCKER_BUILDKIT=1
 
 echo "Rebuilding Docker containers..."
-if ! docker-compose up -d --build --no-cache 2>docker-compose.log; then
-    cat docker-compose.log
-    echo "Deployment failed!"
+if ! docker-compose up -d --build; then
+    echo "Error: Containers failed to start. Checking logs..."
+    docker-compose logs 
     exit 1
 fi
 
-rm -f docker-compose.log
-echo "Deployment complete!"
+echo "Verifying container status..."
+if docker ps | grep -q "bettermoveco"; then
+    echo "Deployment successful! Containers are running."
+else
+    echo "Error: Containers are not running. Check logs:"
+    docker-compose logs
+    exit 1
+fi
