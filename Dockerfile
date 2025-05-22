@@ -22,6 +22,9 @@ RUN pnpm install --frozen-lockfile
 FROM base AS builder
 WORKDIR /app
 
+# Install pnpm again in the builder stage
+RUN npm install -g pnpm@9
+
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
@@ -56,5 +59,4 @@ USER nextjs
 EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
-
 CMD ["node", "server.js"]
