@@ -8,7 +8,7 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 # Install pnpm 
-RUN npm install -g pnpm@8 && \
+RUN npm install -g pnpm@9 && \
     pnpm config set verify-store-integrity false
 
 
