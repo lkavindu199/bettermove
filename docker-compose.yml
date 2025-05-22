@@ -14,5 +14,7 @@ services:
     command: pnpm run dev  
     env_file:
       - .env
-    networks:
-      - app-network
+
+networks:
+      app-network:
+        driver: bridge
