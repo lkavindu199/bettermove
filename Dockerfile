@@ -6,30 +6,23 @@ ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
-# Stage 2: Dependencies
-FROM base AS deps
+# Stage 2: Development (single stage)
+FROM base AS dev
 WORKDIR /app
+
+# Copy package files first for better caching
 COPY package.json pnpm-lock.yaml ./
+
+# Install all dependencies (including devDependencies)
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
-    pnpm install --frozen-lockfile --prod && \
-    pnpm add cross-env
+    pnpm install --frozen-lockfile
 
-# Stage 3: Builder
-FROM base AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+# Copy source code
 COPY . .
-RUN pnpm run dev
 
-# Stage 4: Runner
-FROM base AS runner
-WORKDIR /app
-ENV NODE_ENV=production
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S -u 1001 -G nodejs nextjs
-COPY --from=builder --chown=nextjs:nodejs /app/public ./public
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-USER nextjs
+# Expose ports
 EXPOSE 3000
-CMD ["node", "server.js"]
+EXPOSE 24678 
+
+# Start in dev mode with hot reloading
+CMD ["pnpm", "run", "dev"]
