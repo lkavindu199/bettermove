@@ -8,11 +8,11 @@ FROM base AS deps
 # Needed for some Node.js binaries on Alpine
 RUN apk add --no-cache libc6-compat
 
-WORKDIR /app
-
 # Install pnpm and configure it
 RUN npm install -g pnpm@9 && \
     pnpm config set verify-store-integrity false
+
+WORKDIR /app
 
 COPY package.json pnpm-lock.yaml ./
 
