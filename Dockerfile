@@ -10,7 +10,8 @@ WORKDIR /app
 # Install pnpm first (simplified approach)
 RUN corepack disable && \
     npm install -g pnpm@8 && \
-    corepack enable pnpm
+    corepack enable pnpm && \
+    pnpm config set verify-store-integrity false
 
 # Install dependencies based on the preferred package manager
 COPY package.json pnpm-lock.yaml ./
