@@ -1,28 +1,30 @@
-# To use this Dockerfile, you have to set `output: 'standalone'` in your next.config.mjs file.
+# To use this Dockerfile, set `output: 'standalone'` in your next.config.mjs.
+
 FROM node:22.12.0-alpine AS base
 
 # Install dependencies only when needed
 FROM base AS deps
-# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
+
+# Needed for some Node.js binaries on Alpine
 RUN apk add --no-cache libc6-compat
+
 WORKDIR /app
 
-# Install pnpm 
+# Install pnpm and configure it
 RUN npm install -g pnpm@9 && \
     pnpm config set verify-store-integrity false
 
-
-# Install dependencies based on the preferred package manager
 COPY package.json pnpm-lock.yaml ./
+
 RUN pnpm install --frozen-lockfile
 
 # Rebuild the source code only when needed
 FROM base AS builder
 WORKDIR /app
+
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Disable telemetry during build
 ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN pnpm run build
@@ -32,20 +34,20 @@ FROM base AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
-# Disable telemetry during runtime
 ENV NEXT_TELEMETRY_DISABLED=1
 
+# Create a non-root user for security
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
 
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/package.json ./
 
-# Set the correct permission for prerender cache
+# Prerender cache permissions
 RUN mkdir -p .next && \
     chown nextjs:nodejs .next
 
-# Automatically leverage output traces to reduce image size
+# Copy standalone build output with correct ownership
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
