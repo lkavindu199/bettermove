@@ -2,7 +2,7 @@ import { WorkProcess } from '@/components/WorkProcess';
 import AboutUs from '@/components/AboutUs';
 import { Testimonials } from '@/components/Testimonials';
 import { WhyChooseUs } from '@/components/WhyChooseUs';
-import { FaqSection } from '@/components/FAQSection';
+import { FaqSection } from '@/components/FaqSection';
 import { OurTeam } from '@/components/OurTeam';
 
 export default function HomePage() {
