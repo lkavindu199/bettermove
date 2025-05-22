@@ -19,7 +19,7 @@ FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN pnpm run build
+RUN pnpm run dev
 
 # Stage 4: Runner
 FROM base AS runner
