@@ -1,12 +1,18 @@
 #!/bin/bash
 set -e
 
+# Navigate to the application directory
 cd /root/apps/bettermoveco
 
+# Stop and remove existing containers
 echo "Stopping existing containers..."
 docker-compose down --volumes --remove-orphans
 
+# Enable BuildKit
+export DOCKER_BUILDKIT=1
+
+# Rebuild and restart containers
 echo "Rebuilding Docker containers..."
-DOCKER_BUILDKIT=1 docker-compose up -d --build --no-cache
+docker-compose up -d --build --no-cache
 
 echo "Deployment complete!"
