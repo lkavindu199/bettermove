@@ -7,11 +7,10 @@ FROM base AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-# Install pnpm first (simplified approach)
-RUN corepack disable && \
-    npm install -g pnpm@8 && \
-    corepack enable pnpm && \
+# Install pnpm 
+RUN npm install -g pnpm@8 && \
     pnpm config set verify-store-integrity false
+
 
 # Install dependencies based on the preferred package manager
 COPY package.json pnpm-lock.yaml ./
