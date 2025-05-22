@@ -53,7 +53,7 @@ jobs:
             git add .
             git stash
             git pull
-            cd /root/apps/bettermovec
+            cd /root/apps/bettermoveco
             chmod +x start-application.sh          
             ./start-application.sh
 
