@@ -26,3 +26,24 @@ EXPOSE 24678
 
 # Start in dev mode with hot reloading
 CMD ["pnpm", "run", "dev"]
+
+# Stage 3: Production
+FROM base AS dev
+WORKDIR /app 
+
+# Copy package files first for better caching
+COPY package.json pnpm-lock.yaml ./
+
+# Install ALL dependencies (including devDependencies like cross-env)
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
+    pnpm install --frozen-lockfile  # No --prod flag!
+
+# Copy source code
+COPY . .
+
+# Expose ports (dev server + HMR)
+EXPOSE 3000
+EXPOSE 24678
+
+# Dev command (with hot reloading)
+CMD ["pnpm", "run", "dev"]
