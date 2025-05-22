@@ -1,0 +1,69 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main  
+
+env:
+  APP_PATH: /root/apps/bettermoveco
+    
+jobs:
+  deploy:
+    name: Build & Deploy to Server
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node and PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10
+          run_install: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Next.js App
+        run: pnpm build
+
+      # OPTIONAL: Build Flutter (if part of same repo)
+      # - name: Build Flutter Web
+      #   run: flutter build web
+
+      - name: Copy Project Files to Server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          source: "."
+          target: "/root/apps/bettermoveco"
+          rm: true
+          script: |
+            set -e
+            cd /root/apps/bettermoveco
+            git add .
+            git stash
+            git pull
+            cd /root/apps/bettermovec
+            chmod +x start-application.sh          
+            ./start-application.sh
+
+      - name: SSH and Deploy
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            cd /root/apps/bettermoveco
+            docker-compose -f .docker/docker-compose.yml down
+            docker-compose -f .docker/docker-compose.yml up -d --build
