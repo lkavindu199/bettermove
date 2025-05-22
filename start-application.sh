@@ -6,7 +6,7 @@ cd /root/apps/bettermoveco
 
 # Stop and remove existing containers
 echo "Stopping existing containers..."
-docker-compose down --volumes --remove-orphans
+docker-compose down --volumes --remove-orphans 2>/dev/null
 
 # Enable BuildKit
 export DOCKER_BUILDKIT=1
