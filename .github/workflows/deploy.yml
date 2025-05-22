@@ -25,7 +25,6 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           source: "."
           target: "${{ env.APP_PATH }}"
-          rm: true
 
       - name: SSH into Server and Deploy
         uses: appleboy/ssh-action@v1.0.0
