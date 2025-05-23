@@ -50,7 +50,7 @@ export function OurProjects() {
             <div className="section-title-content wow fadeInUp" data-wow-delay="0.2s">
               <p>
                 Take a closer look at our recent projects and see how we turn every move into a seamless experience. 
-                From small local moves to large-scale relocations, we're proud to showcase the care.
+                From small local moves to large-scale relocations, we&#39;re proud to showcase the care.
               </p>
             </div>
           </div>

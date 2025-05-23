@@ -38,7 +38,7 @@ export default function ProjectSingle({ params }: { params: { slug: string } }) 
         } else {
           notFound();
         }
-      } catch (err) {
+      } catch (err:any) {
         console.error('Failed to fetch project:', err);
         notFound();
       } finally {

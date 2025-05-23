@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 
 interface VideoItem {
   id: string
@@ -118,7 +119,9 @@ export default function VideoGalleryPage() {
                 </h1>
                 <nav className="wow fadeInUp">
                   <ol className="breadcrumb">
-                    <li className="breadcrumb-item"><a href="/">home</a></li>
+                         <li className="breadcrumb-item">
+                      <Link href="/">home</Link>
+                    </li>
                     <li className="breadcrumb-item active" aria-current="page">video gallery</li>
                   </ol>
                 </nav>

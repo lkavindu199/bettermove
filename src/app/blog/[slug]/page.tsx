@@ -1,7 +1,7 @@
-import { notFound } from 'next/navigation'
 import { getPayloadClient } from '@/get-payload'
 import { RichText } from '@/components/RichText'
 import Image from 'next/image'
+import { notFound as throwNotFound } from 'next/navigation'
 
 interface BlogPost {
   id: number
@@ -12,7 +12,13 @@ interface BlogPost {
     alt?: string
   }
   publishedDate: string
-  content: any
+    content: {
+    root: {
+      children: any[]
+      type: string
+      version: number
+    }
+  }
   author?: {
     name: string
     position: string
@@ -31,7 +37,6 @@ interface BlogPost {
   }
   excerpt?: string
 }
-
 interface BlogSettings {
   title: string
   highlightedText: string
@@ -42,7 +47,13 @@ interface BlogSettings {
   }
 }
 
-export default async function BlogPostPage({ params }: { params: { slug: string } }) {
+interface PageProps {
+  params: {
+    slug: string
+  }
+}
+
+export default async function Page({ params }: PageProps) {
   const payload = await getPayloadClient()
 
   try {
@@ -63,7 +74,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
 
     const blogPost = post.docs[0]
 
-    if (!blogPost) return notFound()
+   if (!blogPost) throwNotFound()
 
     return (
       <>
@@ -199,8 +210,8 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
         {/* Page Single Post End */}
       </>
     )
-  } catch (error) {
-    return notFound()
+  } catch (error: any) {
+    throwNotFound()
   }
 }
 
@@ -237,7 +248,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
       description: blogPost?.meta?.description || blogPost.excerpt,
       keywords: blogPost?.meta?.keywords || '',
     }
-  } catch (error) {
+  } catch (error: any) {
     return {
       title: 'Blog Post',
       description: 'Read our latest blog post',

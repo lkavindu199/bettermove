@@ -1,5 +1,6 @@
 import { OurServices } from '@/components/OurServices';
 import { Metadata } from 'next';
+import Link from 'next/link'; 
 
 export const metadata: Metadata = {
   title: 'Our Services - Movein',
@@ -17,7 +18,9 @@ export default function ServicesPage() {
                 <h1 className="text-anime-style-2" data-cursor="-opaque">Our services</h1>
                 <nav className="wow fadeInUp">
                   <ol className="breadcrumb">
-                    <li className="breadcrumb-item"><a href="/">home</a></li>
+                     <li className="breadcrumb-item">
+                      <Link href="/">home</Link>
+                    </li>
                     <li className="breadcrumb-item active" aria-current="page">services</li>
                   </ol>
                 </nav>

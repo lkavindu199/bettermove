@@ -63,7 +63,7 @@ export default function ServiceSingle({ params }: { params: { slug: string } }) 
         } else {
           notFound();
         }
-      } catch (err) {
+      } catch (err:any) {
         console.error('Failed to fetch data:', err);
         notFound();
       } finally {

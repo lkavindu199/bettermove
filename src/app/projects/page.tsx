@@ -1,4 +1,5 @@
 import { OurProjects } from '@/components/OurProjects';
+import Link from 'next/link';
 
 export default function ProjectsPage() {
   return (
@@ -11,7 +12,9 @@ export default function ProjectsPage() {
                 <h1 className="text-anime-style-2" data-cursor="-opaque">Our projects</h1>
                 <nav className="wow fadeInUp">
                   <ol className="breadcrumb">
-                    <li className="breadcrumb-item"><a href="/">home</a></li>
+                    <li className="breadcrumb-item">
+                      <Link href="/">home</Link>
+                    </li>
                     <li className="breadcrumb-item active" aria-current="page">projects</li>
                   </ol>
                 </nav>
